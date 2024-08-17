@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "web"
+version = "0.1.0"
+description = ""
+authors = ["tavo <tavo.lop33@gmail.com>",
+           "Joaquín Spinelli <joakospinelli@gmail.com>",
+           "Guadalupe Evequoz <guadalupe.evequoz@gmail.com>",
+           "Fabricio Chavero <fabochavero@gmail.com>"]
+readme = "README.md"
+packages = [{include = "web", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+flask = "^2.3.3"
+psycopg2-binary = "^2.9.7"
+flask-sqlalchemy = "^3.1.1"
+python-dotenv = "^1.0.0"
+flask-wtf = "^1.2.1"
+flask-session = "^0.5.0"
+flask-bcrypt = "^1.0.1"
+flask-mail = "^0.9.1"
+flask-paginate = "^2022.1.8"
+marshmallow = "^3.20.1"
+flask-jwt-extended = "^4.5.3"
+flask-cors = "^4.0.0"
+flask-oauthlib = "^0.9.6"
+Werkzeug = "2.3.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.1"
+flask-shell-ipython = "^0.5.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

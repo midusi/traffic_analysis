@@ -1,0 +1,41 @@
+<div class="modal fade" id="update-info-modal" tabindex="-1" aria-labelledby="updateInfoModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="update-info-modal-label">Configurar información y paginado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h5>Elementos por página</h5>
+        <p class="fw-light">Indique la cantidad de elementos que se mostrará en cada página de los listados y tablas.</p>
+        <form method="POST" action="{{ url_for('configuracion.update_info') }}">
+          <input type="number" class="form-control" min="1" max="15" name="cant-elementos-pag" required value="{{ config.cant_elementos_pag }}">
+
+          <h5 class="mt-3">Información de contacto</h5>
+          <p class="fw-light">Seleccione los datos de contacto de las instituciones que se verán en la aplicación pública.</p>
+          <ul class="list-group">
+            {%for item in info %}
+              <li class="list-group-item">
+                <div class="form-check">
+                  <input class="form-check-input"
+                        type="checkbox"
+                        value="{{ item.id }}"
+                        id="{{ item.id }}-info-check"
+                        name="info-check-{{ item.id }}"
+                        {%if item.activo %} checked {% endif %}>
+                  <label class="form-check-label" for="{{ item.id }}-info-check">
+                    {{ item.nombre }}
+                  </label>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <span class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</span>
+          <button type="submit" class="btn btn-primary">Actualizar</button>
+        </form>
+        </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block title %}
+    {{ super() }}
+    Aplicación Privada
+{% endblock %}
+
+{% block head %}
+    {{ super () }}
+{% endblock %}
+
+{% block navitems %}
+    {{ super() }}
+{% endblock %}
+
+{% block navoptions %}
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" href="{{ url_for('registro.registro_simple')}}">Registrarse</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('acceso.login')}}">Acceder</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div class="container d-flex mx-0 mx-md-auto text-center text-lg-start">
+        <div class="row justify-content-center">
+
+            <div class="col-sm-6 my-auto container">
+                <div class="row mx-auto">
+                    <div class="col-md-3 d-flex my-auto">
+                        <img src="{{ url_for('static', filename='logos/cidepint.png') }}" class="img-index mx-auto">
+                    </div>
+
+                    <div class="col-md-9 text-center text-md-start">
+                        <h1 class="fs-1 fw-bolder uppercase">CIDEPINT</h1>
+                        <p class="fs-3 d-none d-lg-block">
+                            Centro de Investigación y Desarrollo en tecnología de Pinturas y Recubrimientos
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-6 fs-6 my-md-auto ps-0 ps-md-5">
+                <img src="{{ url_for('static', filename='logos/orgs.png') }}" class="img-banner my-3">
+                <p>
+                    CIDEPINT es una institución que depende del sistema <b>CICPBA-CONICET-UNLP</b>. Su objetivo principal es promover la competitividad de 
+                    los productos de pintura argentinos a nivel nacional e internacional mediante investigaciones y desarrollos en tecnología de recubrimientos.
+                </p>
+
+                <p class="d-none d-lg-block">
+                    El centro cuenta hoy con personal capacitado en el desarrollo y caracterización de pinturas anticorrosivas y decorativas, 
+                    antiincrustantes, con propiedades antifúngicas, entre otras con aplicaciones específicas. De la misma manera se incorporaron 
+                    líneas de trabajo en el área de pretratamientos de aceros, biodeterioro de materiales estructurales, inhibición de la corrosión, 
+                    galvanoplastía y siderurgia, muchas de las cuales se enfocan en la obtención de alternativas ecológicas que reduzcan el impacto de 
+                    la industria sobre el medio ambiente.
+                </p>
+
+                    <a href="{{ url_for('registro.registro_simple') }}">
+                        <h2 class="h2-a fs-4">Registrarse</h2>
+                    </a>
+
+                    <a href="{{ url_for('acceso.login') }}">
+                        <h2 class="h2-a fs-4">Iniciar sesión</h2>
+                    </a>
+                    <!-- TODO borrar esto, es un ejemplo de chequeo de auth  -->
+                    {% if esta_autenticado(session) %}
+                      <a href="{{ url_for('acceso.logout') }}">
+                        <h2 class="h2-a fs-4">Cerrar sesión</h2>
+                        <h2 class="h2-a fs-4">AUTENTICADO</h2>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "layout-logged.html" %} {% from "instituciones/_formhelpers.html"
+import render_field %} {% block title %} Instituciones {% endblock %} {% block
+head %} {{ super () }} {% endblock %} {% block content %}
+
+<div
+  style="border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+  class="container-fluid bg-light m-2 p-5"
+>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="m-0">Editar institución</h1>
+    <a href="/instituciones">
+      <button class="btn boton">Volver</button>
+    </a>
+  </div>
+
+  <form
+    method="POST"
+    action="{{ url_for('instituciones.update', id=institucion.id) }}"
+  >
+    {{ form.csrf_token }}
+    <div class="mb-1">
+      {{ render_field(form.nombre, class="form-control",
+      value=institucion.nombre) }}
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.info, class="form-control", value=institucion.info)
+      }}
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.direccion, class="form-control",
+      value=institucion.direccion) }}
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.localizacion, class="form-control",
+      value=institucion.localizacion) }}
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.web, class="form-control", value=institucion.web) }}
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.palabra_clave, class="form-control",
+      value=(institucion.palabra_clave | join(','))) }}
+      <p style="color: grey"><i>Separar cada palabra diferente con ",".</i></p>
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.horario_atencion, class="form-control",
+      value=institucion.horario_atencion) }}
+      <p style="color: grey"><i>Separar cada horario diferente con ",".</i></p>
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.email, class="form-control", value=institucion.email)
+      }}
+    </div>
+    <div class="mb-1">
+      {{ render_field(form.telefono, class="form-control",
+      value=institucion.telefono) }}
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <button type="submit" class="btn boton">Editar</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

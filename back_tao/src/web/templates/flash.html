@@ -1,0 +1,22 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash {{category}}" id="flash-card">
+                <p style="float:right; cursor: pointer;" id="flash-close">x</p>
+                <p class="fw-bold">Aviso</p>
+                <p>
+                    {{ message }}
+                </p>
+            </div>
+        {% endfor %}
+        <script>
+            setTimeout(() => {
+                document.getElementById('flash-card').remove();
+            }, 7500);
+
+            document.getElementById('flash-close').addEventListener('click', () => {
+                document.getElementById('flash-card').remove();
+            })
+        </script>
+    {% endif %}
+{% endwith %}

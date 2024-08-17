@@ -1,0 +1,87 @@
+{% extends "layout-logged.html" %}
+
+{% block title %} Administración de usuarios de la institución {% endblock %}
+
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+<div style="border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)" class="container-fluid bg-light m-2 p-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="m-0">Administración de instituciones a las que pertenece el usuario {{usuario.username}}</h1>
+  </div>
+
+  <!-- ... HTML anterior ... -->
+
+  <!-- Tabla para mostrar la institución activa -->
+  <div class="table-responsive">
+    <h2>Institución Activa</h2>
+    {% if usuario.institucion_activa %}
+    <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th class="th-sm">Nombre</th>
+          <th class="th-sm">Información</th>
+          <th class="th-sm">Dirección</th>
+          <th class="th-sm">Localización</th>
+          <th class="th-sm">Web</th>
+          <th class="th-sm">Palabras Clave</th>
+          <th class="th-sm">Horario de Atención</th>
+          <th class="th-sm">Habilitado</th>
+          <th class="th-sm">Contacto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ usuario.institucion_activa.nombre }}</td>
+          <td>{{ usuario.institucion_activa.info }}</td>
+          <td>{{ usuario.institucion_activa.direccion }}</td>
+          <td>{{ usuario.institucion_activa.localizacion }}</td>
+          <td>{{ usuario.institucion_activa.web }}</td>
+          <td>{{ usuario.institucion_activa.palabra_clave | join(', ') }}</td>
+          <td>{{ usuario.institucion_activa.horario_atencion }}</td>
+          <td>{{ "Sí" if usuario.institucion_activa.habilitado else "No" }}</td>
+          <td>{{ usuario.institucion_activa.contacto }}</td>
+        </tr>
+      </tbody>
+    </table>
+    {% else %}
+    <p>No tenes una institución activa asignada.</p>
+    {% endif %}
+  </div>
+  <!-- Tabla para mostrar las instituciones normales -->
+  <div class="table-responsive">
+    <h2>Otras Instituciones</h2>
+    {% if instituciones %}
+    <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th class="th-sm">Nombre</th>
+          <th class="th-sm">Información</th>
+          <th class="th-sm">Dirección</th>
+          <th class="th-sm">Localización</th>
+          <th class="th-sm">Web</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for institucion in instituciones %}
+        <tr>
+          <td>{{ institucion.nombre }}</td>
+          <td>{{ institucion.info }}</td>
+          <td>{{ institucion.direccion }}</td>
+          <td>{{ institucion.localizacion }}</td>
+          <td>{{ institucion.web }}</td>
+          <td>
+            <a href="{{ url_for('usuarios.activar_institucion', institution_id=institucion.id) }}">
+              <button class="btn boton">Establecer como institución activa</button>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No tienes instituciones asignadas. Comunícate con el encargado de tu institución para ser asignado.</p>
+    {% endif %}
+  </div>
+  {% endblock %}

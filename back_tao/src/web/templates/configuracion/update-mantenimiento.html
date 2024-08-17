@@ -1,0 +1,41 @@
+<div class="modal fade" id="update-mantenimiento-modal" tabindex="-1" aria-labelledby="updateMantenimientoModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="update-mantenimiento-modal-label">Configurar mantenimiento</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+                <h5>Estado de la aplicación</h5>
+                <p class="fw-light my-0">El sitio 
+                    {%if config.mantenimiento %}
+                        se encuentra
+                    {% else %}
+                        no está
+                    {% endif %} en mantenimiento.
+                    <form method="POST" action="{{ url_for('configuracion.update_mant') }}">
+                    <div class="form-check form-switch my-1">
+                        <input class="form-check-input"
+                            type="checkbox"
+                            id="mantenimiento-estado-switch"
+                            name="mantenimiento-check"
+                            value="1"
+                            {% if config.mantenimiento %}checked{% endif %}>
+                        <label class="form-check-label" for="mantenimiento-estado-switch">Desactivar/activar mantenimiento</label>
+                    </div>
+                    <h5 class="mt-3">Mensaje de aviso</h5>
+                    <p class="fw-light">Escriba el mensaje que se mostrará a los usuarios mientras el sitio esté en mantenimiento.</p>
+                    <textarea class="form-control border fw-lighter"
+                              style="resize:none; height: 6rem"
+                              minlength="10"
+                              name="mantenimiento-msg"
+                              required>{{ config.mantenimiento_msg }}</textarea>
+            </div>
+            <div class="modal-footer">
+                <span class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</span>
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
