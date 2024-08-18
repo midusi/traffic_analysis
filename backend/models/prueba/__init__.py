@@ -1,5 +1,5 @@
-from src.core.models.prueba.prueba import Prueba
-from src.core.database import db
+from backend.models.prueba.prueba import Prueba
+from backend.models.database import db
 
 def create_prueba(**kwargs):
     prueba = Prueba(**kwargs)

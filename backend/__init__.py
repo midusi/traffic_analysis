@@ -1,8 +1,7 @@
 from flask import Flask, render_template
-from src.web.config import config
-from src.core import database, seeds
+from backend.config import config
+from backend.models import database, seeds, prueba
 from os import urandom
-from src.web.controllers.prueba import prueba_blueprint
 
 def create_app(env="development", static_folder="../../static"):
 
@@ -12,15 +11,12 @@ def create_app(env="development", static_folder="../../static"):
     app.secret_key = urandom(24)
     app.config.from_object(config[env])
 
-    #rutas
-    app.register_blueprint(prueba_blueprint)
-
     # Inicializo la base de datos
     database.init_app(app)
 
     @app.get("/")
     def entry_point():
-        return render_template("prueba.html")
+        return render_template("prueba.html", pruebas=prueba.list_pruebas())
 
     @app.cli.command(name="resetdb")
     def resetdb():

@@ -1,4 +1,4 @@
-from src.core.database import db
+from backend.models.database import db
 
 class Prueba(db.Model):
     __tablename__="prueba"

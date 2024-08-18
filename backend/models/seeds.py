@@ -1,4 +1,4 @@
-from src.core.models import prueba
+from backend.models import prueba
 
 def run():
 
