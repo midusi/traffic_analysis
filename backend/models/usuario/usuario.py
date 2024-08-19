@@ -8,6 +8,7 @@ class Usuario(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     nombre = db.Column(db.String(25), nullable=True)
     apellido = db.Column(db.String(25), nullable=True)
+    admin = db.Column(db.Boolean, nullable=False)
     activo = db.Column(db.Boolean, nullable=False)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(
@@ -20,12 +21,14 @@ class Usuario(db.Model):
         email=None,
         nombre=None,
         apellido=None,
+        admin=None,
     ):
-        self.password = password
         self.email = email
+        self.password = password
         self.nombre = nombre
         self.apellido = apellido
+        self.admin = admin
         self.activo = True
 
     def __repr__(self):
-        return f"<Usuario {self.username}>"
+        return f"<Usuario {self.email}>"
