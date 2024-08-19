@@ -3,6 +3,8 @@ from backend.config import config
 from backend.models import database, seeds, prueba
 from os import urandom
 from backend.api import api_blueprint
+from flask_jwt_extended import JWTManager
+
 
 def create_app(env="development", static_folder="../../static"):
 
@@ -14,6 +16,8 @@ def create_app(env="development", static_folder="../../static"):
 
     # Inicializo la base de datos
     database.init_app(app)
+    JWTManager(app)
+    # mail.init_app(app)
 
     # Registramos blueprint principal
     app.register_blueprint(api_blueprint)
@@ -24,18 +28,18 @@ def create_app(env="development", static_folder="../../static"):
 
     @app.cli.command(name="resetdb")
     def resetdb():
-        '''
-            Función para reiniciar la base de datos. La forma de llamar a esta funcionalidad es mediante el
-            comando "flask resetdb"
-        '''
+        """
+        Función para reiniciar la base de datos. La forma de llamar a esta funcionalidad es mediante el
+        comando "flask resetdb"
+        """
         database.reset_db()
 
     @app.cli.command(name="seedsdb")
     def seedsdb():
-        '''
-            Función para cargar la bd con datos genéricos. La forma de llamar a esta funcionalidad es mediante el
-            comando "flask seedsdb"
-        '''
+        """
+        Función para cargar la bd con datos genéricos. La forma de llamar a esta funcionalidad es mediante el
+        comando "flask seedsdb"
+        """
         seeds.run()
 
     return app

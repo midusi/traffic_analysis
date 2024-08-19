@@ -26,15 +26,41 @@ def crear_usuario(nombre, apellido, email, admin):
     Carga al usuario en la bd y le asigna una contraseña
     """
 
-    password = secrets.token_urlsafe(10)
-    hash = bcrypt.generate_password_hash(password.encode("utf-8"))
-    password = hash.decode("utf-8")
+    org_password = secrets.token_urlsafe(10)
+    password = hashear_password(org_password)
 
     usuario = Usuario(
         password=password, email=email, nombre=nombre, apellido=apellido, admin=admin
     )
+
     db.session.add(usuario)
     db.session.commit()
+
+    # QUITAR ESTO
+    return org_password
+
+
+def crear_usuario_password(nombre, apellido, email, admin, password):
+    """
+    Carga al usuario en la bd y le asigna una contraseña
+    """
+
+    password = hashear_password(password)
+
+    usuario = Usuario(
+        password=password, email=email, nombre=nombre, apellido=apellido, admin=admin
+    )
+
+    db.session.add(usuario)
+    db.session.commit()
+
+    return usuario
+
+
+def hashear_password(password):
+    hash = bcrypt.generate_password_hash(password.encode("utf-8"))
+    password = hash.decode("utf-8")
+    return password
 
 
 def buscar_usuario_por_email(email):

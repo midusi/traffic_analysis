@@ -8,9 +8,14 @@ class Config(object):
     """
 
     load_dotenv()
-    TESTING = False
+    # Guarda cuando salga a prod todo esto
+    TESTING = True
     DEBUG = False
     PROPAGATE_EXCEPTIONS = True
+    SESSION_TYPE = "filesystem"
+    JWT_SECRET_KEY = "clave_recontra_secreta"
+    JWT_TOKEN_LOCATION = ["headers"]
+    JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
 
 
 class ProductionConfig(Config):
