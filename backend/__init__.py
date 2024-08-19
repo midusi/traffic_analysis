@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from backend.config import config
 from backend.models import database, seeds, prueba
 from os import urandom
+from backend.api import api_blueprint
 
 def create_app(env="development", static_folder="../../static"):
 
@@ -13,6 +14,9 @@ def create_app(env="development", static_folder="../../static"):
 
     # Inicializo la base de datos
     database.init_app(app)
+
+    # Registramos blueprint principal
+    app.register_blueprint(api_blueprint)
 
     @app.get("/")
     def entry_point():
