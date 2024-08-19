@@ -1,6 +1,6 @@
-from src.core.database import db
-from src.core.autenticacion.usuario import Usuario
-from core.autenticacion.bcrypt import bcrypt
+from backend.models.database import db
+from backend.models.usuario.usuario import Usuario
+from backend.models.bcrypt import bcrypt
 import secrets
 
 
@@ -25,17 +25,13 @@ def crear_usuario(nombre, apellido, email):
     """
     Carga al usuario en la bd y le asigna una contraseña
     """
-    usuario = Usuario(
-        nombre=nombre,
-        apellido=apellido,
-        email=email,
-    )
 
     password = secrets.token_urlsafe(10)
+    print(password)
     hash = bcrypt.generate_password_hash(password.encode("utf-8"))
     password = hash.decode("utf-8")
-    usuario.password = password
 
+    usuario = Usuario(password=password, email=email, nombre=nombre, apellido=apellido)
     db.session.add(usuario)
     db.session.commit()
 
