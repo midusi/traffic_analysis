@@ -21,24 +21,19 @@ def listar_usuarios_paginated(page, per_page, email=None, activo=None):
     return usuarios
 
 
-def crear_usuario(nombre, apellido, email):
+def crear_usuario(nombre, apellido, email, admin):
     """
     Carga al usuario en la bd y le asigna una contraseña
     """
 
     password = secrets.token_urlsafe(10)
-    print(password)
     hash = bcrypt.generate_password_hash(password.encode("utf-8"))
     password = hash.decode("utf-8")
 
-    usuario = Usuario(password=password, email=email, nombre=nombre, apellido=apellido)
+    usuario = Usuario(
+        password=password, email=email, nombre=nombre, apellido=apellido, admin=admin
+    )
     db.session.add(usuario)
-    db.session.commit()
-
-
-def agregar_permiso_a_rol(permiso, rol):
-    """Agrega un rol a un permiso"""
-    rol.permisos.append(permiso)
     db.session.commit()
 
 
@@ -68,11 +63,11 @@ def chequear_usuario(email, password):
 def update_usuario(**kwargs):
     """Actualiza los datos de un usuario"""
     usuario = buscar_usuario_por_id(kwargs["id"])
-    usuario.username = kwargs["username"]
     usuario.email = kwargs["email"]
     usuario.nombre = kwargs["nombre"]
     usuario.apellido = kwargs["apellido"]
     usuario.activo = kwargs["activo"]
+    usuario.admin = kwargs["admin"]
 
     db.session.commit()
 
@@ -95,3 +90,9 @@ def esta_activo(email):
     """Verifica si el usuario con el email dado esta activo"""
     usuario = buscar_usuario_por_email(email)
     return usuario.activo
+
+
+def es_admin(email):
+    """Verifica si el usuario con el email dado es admin"""
+    usuario = buscar_usuario_por_email(email)
+    return usuario.admin
