@@ -1,49 +1,92 @@
-from flask import Blueprint, request, redirect, url_for
+from flask import Blueprint, jsonify, request, url_for
 from backend.helpers.mail import enviar_mail
 from backend.helpers.produccion import conseguir_url
 from backend.models.usuario import (
     crear_usuario,
     buscar_usuario_por_email,
-    completar_usuario,
-    buscar_usuario_por_username,
+    renovar_password,
 )
+from backend.models.schemas.registro import registro_schema, confirmar_registro_schema
+from marshmallow import ValidationError
+import secrets
+from werkzeug.exceptions import UnsupportedMediaType
 
-registro_bp = Blueprint("registro", __name__, url_prefix="/autenticacion/registro")
+registro_bp = Blueprint("registro", __name__, url_prefix="/auth/registro")
 
 
 @registro_bp.post("/")
-def registro_simple():
+def registro():
     """
-    Muestra la vista de la primera etapa del registro, además valida los
-    parametros, envia el mail de confirmación y guarda al usuario si
-    se recibió el formulario.
+    Valida los parametros y envia el mail de confirmación
     """
-    # validar con schema
-    if buscar_usuario_por_email():
-        flash("El mail ingresado ya se encuentra registrado", "error")
-        return redirect(url_for("registro"))
 
-    crear_mail(email, form.nombre.data, form.apellido.data)
-    crear_usuario(nombre, apellido, email, token)
+    try:
+        req_data = request.json
+    except UnsupportedMediaType:
+        return {
+            "error": "Debe proveer nombre, apellido, email y si es admin en el contenido json de la peticion"
+        }, 400
 
-    flash(
-        "Se envió un mail de confirmación a su email para finalizar el registro.",
-        "success",
+    try:
+        data = registro_schema.load(req_data)
+    except ValidationError as err:
+        return jsonify({"errors": err.messages}), 422
+
+    if buscar_usuario_por_email(data["email"]):
+        return jsonify({"error": "El mail ingresado ya se encuentra registrado."}), 422
+
+    random = secrets.token_urlsafe(16)
+    usr = crear_usuario(
+        nombre=data["nombre"],
+        apellido=data["apellido"],
+        email=data["email"],
+        admin=data["admin"],
+        password=random,
     )
-    return redirect(url_for("acceso.login"))
+    crear_mail(data["email"], usr.token)
+
+    return (
+        jsonify(
+            {
+                "message": "Se envió un mail de confirmación a su email para finalizar el registro."
+            }
+        ),
+        200,
+    )
 
 
-@registro_bp.route("/confirmar", methods=["GET", "POST"])
+@registro_bp.post("/confirmar")
 def confirmar_registro():
     """
     Termina el registro del usuario estableciendo una contraseña.
     """
 
-    # sanitizar data y validar con schema
-    completar_usuario(email, form.username.data, form.password.data)
+    try:
+        req_data = request.json
+    except UnsupportedMediaType:
+        return {
+            "error": "Debe proveer nombre, apellido, email y si es admin en el contenido json de la peticion"
+        }, 400
 
-    flash("Ha finalizado su registro, puede usar su cuenta.", "success")
-    return redirect(url_for("acceso.login"))
+    try:
+        data = confirmar_registro_schema.load(req_data)
+    except ValidationError as err:
+        return jsonify({"errors": err.messages}), 422
+
+    usr = buscar_usuario_por_email(data["email"])
+    if not usr:
+        return jsonify({"error": "El mail ingresado no se encuentra registrado."}), 422
+
+    valid = renovar_password(
+        email=data["email"], password=data["password"], token=usr.token
+    )
+    if not valid:
+        return (
+            jsonify({"error": "El token de confirmación es inválido o ha expirado."}),
+            422,
+        )
+
+    return ({"message": "Ha finalizado su registro, puede usar su cuenta."}), 200
 
 
 def crear_mail(email, token):
@@ -108,3 +151,10 @@ def crear_mail(email, token):
     )
 
     enviar_mail("Confirmación de cuenta", email, html=html)
+
+
+"""
+Hacer un coso de recuperar contraseña
+en los endpoint donde llega via link de mail, hay que tomar los params de url y no del body
+testear registro y recuperar contraseña
+"""

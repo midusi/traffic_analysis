@@ -3,7 +3,6 @@ from backend.models.database import db
 from backend.models.usuario import (
     Usuario,
     crear_usuario,
-    crear_usuario_password,
     buscar_usuario_por_email,
     chequear_usuario,
 )
@@ -14,7 +13,7 @@ from backend.models.usuario import update_usuario
 class UsuarioTestCase(BaseTestClass):
     def setUp(self):
         super().setUp()
-        crear_usuario_password(
+        crear_usuario(
             nombre="Juan",
             apellido="Pérez",
             email="juan.perez@example.com",
@@ -23,15 +22,11 @@ class UsuarioTestCase(BaseTestClass):
         )
 
     def test_crear_usuario(self):
-        crear_usuario(
-            nombre="Admin", apellido="Messi", email="admin@example.com", admin=True
-        )
-        # Verifica que el usuario fue creado en la base de datos
-        usuario = Usuario.query.filter_by(email="admin@example.com").first()
+        usuario = Usuario.query.filter_by(email="juan.perez@example.com").first()
         self.assertIsNotNone(usuario)
         self.assertIsNotNone(usuario.password)
-        self.assertEqual(usuario.nombre, "Admin")
-        self.assertEqual(usuario.apellido, "Messi")
+        self.assertEqual(usuario.nombre, "Juan")
+        self.assertEqual(usuario.apellido, "Pérez")
         self.assertTrue(usuario.activo)
         self.assertTrue(usuario.admin)
 

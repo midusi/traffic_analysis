@@ -1,6 +1,6 @@
 import unittest
 from flask_jwt_extended import create_access_token
-from backend.models.usuario import crear_usuario, crear_usuario_password
+from backend.models.usuario import crear_usuario
 from .. import BaseTestClass
 
 
@@ -8,7 +8,7 @@ class AutenticacionTestCase(BaseTestClass):
 
     def setUp(self):
         super().setUp()
-        self.usr = crear_usuario_password(
+        self.usr = crear_usuario(
             email="test@example.com",
             nombre="Juan",
             apellido="Pérez",

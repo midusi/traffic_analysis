@@ -1,6 +1,7 @@
 from backend.models.database import db
 from backend.models.usuario.usuario import Usuario
 from backend.models.bcrypt import bcrypt
+from datetime import datetime, timedelta
 import secrets
 
 
@@ -21,28 +22,9 @@ def listar_usuarios_paginated(page, per_page, email=None, activo=None):
     return usuarios
 
 
-def crear_usuario(nombre, apellido, email, admin):
+def crear_usuario(nombre, apellido, email, admin, password):
     """
-    Carga al usuario en la bd y le asigna una contraseña
-    """
-
-    org_password = secrets.token_urlsafe(10)
-    password = hashear_password(org_password)
-
-    usuario = Usuario(
-        password=password, email=email, nombre=nombre, apellido=apellido, admin=admin
-    )
-
-    db.session.add(usuario)
-    db.session.commit()
-
-    # QUITAR ESTO
-    return org_password
-
-
-def crear_usuario_password(nombre, apellido, email, admin, password):
-    """
-    Carga al usuario en la bd y le asigna una contraseña
+    Carga al usuario en la bd hasheando la contraseña
     """
 
     password = hashear_password(password)
@@ -55,6 +37,33 @@ def crear_usuario_password(nombre, apellido, email, admin, password):
     db.session.commit()
 
     return usuario
+
+
+def renovar_password(email, password, token):
+    """Renueva la password de un usuario con email y password, si el token es valido e invalida el token, devuelve True si se realizo la operacion"""
+    usuario = buscar_usuario_por_email(email)
+    if (
+        usuario.token_expiracion is None
+        or usuario.token_expiracion < datetime.now()
+        or usuario.token != token
+    ):
+        return False
+
+    usuario.password = hashear_password(password)
+    usuario.token_expiracion = None
+    db.session.commit()
+    return True
+
+
+def renovar_token(id):
+    """Renueva el token de un usuario con id, si el token es valido, devuelve True si se realizo la operacion"""
+    usuario = buscar_usuario_por_id(id)
+
+    usuario.token = secrets.token_urlsafe(16)
+    usuario.token_expiracion = datetime.now() + timedelta(days=1)
+    db.session.commit()
+
+    return usuario.token
 
 
 def hashear_password(password):

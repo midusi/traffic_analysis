@@ -1,6 +1,6 @@
 from backend.models import prueba
 from backend.models.database import db
-from backend.models.usuario import crear_usuario_password
+from backend.models.usuario import crear_usuario
 
 
 def run():
@@ -10,7 +10,7 @@ def run():
     prueba_1 = prueba.create_prueba(name="Prueba 1")
     prueba_2 = prueba.create_prueba(name="Prueba 2")
 
-    crear_usuario_password(
+    crear_usuario(
         nombre="Admin",
         apellido="Messi",
         email="admin@gmail.com",
