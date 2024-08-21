@@ -14,6 +14,7 @@ mysqlclient = "^2.2.4"
 marshmallow = "^3.21.3"
 flask-bcrypt = "^1.0.1"
 flask-jwt-extended = "^4.6.0"
+flask-mail = "^0.10.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

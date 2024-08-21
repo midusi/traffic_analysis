@@ -41,7 +41,7 @@ def registro():
         apellido=data["apellido"],
         email=data["email"],
         admin=data["admin"],
-        password=random,
+        password=random,  # setea una contraseña cualquiera para impedir el acceso sin haber verificado el mail
     )
     crear_mail(data["email"], usr.token)
 
@@ -58,14 +58,14 @@ def registro():
 @registro_bp.post("/confirmar")
 def confirmar_registro():
     """
-    Termina el registro del usuario estableciendo una contraseña.
+    Termina el registro del usuario estableciendo una contraseña. Recibe el token y la contraseña en el body.
     """
 
     try:
         req_data = request.json
     except UnsupportedMediaType:
         return {
-            "error": "Debe proveer nombre, apellido, email y si es admin en el contenido json de la peticion"
+            "error": "Debe proveer token y password en el contenido json de la peticion"
         }, 400
 
     try:
@@ -73,13 +73,7 @@ def confirmar_registro():
     except ValidationError as err:
         return jsonify({"errors": err.messages}), 422
 
-    usr = buscar_usuario_por_email(data["email"])
-    if not usr:
-        return jsonify({"error": "El mail ingresado no se encuentra registrado."}), 422
-
-    valid = renovar_password(
-        email=data["email"], password=data["password"], token=usr.token
-    )
+    valid = renovar_password(password=data["password"], token=data["token"])
     if not valid:
         return (
             jsonify({"error": "El token de confirmación es inválido o ha expirado."}),
@@ -151,10 +145,3 @@ def crear_mail(email, token):
     )
 
     enviar_mail("Confirmación de cuenta", email, html=html)
-
-
-"""
-Hacer un coso de recuperar contraseña
-en los endpoint donde llega via link de mail, hay que tomar los params de url y no del body
-testear registro y recuperar contraseña
-"""

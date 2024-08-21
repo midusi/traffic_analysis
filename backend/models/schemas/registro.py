@@ -18,7 +18,13 @@ class RecuperarContraseñaSchema(Schema):
     email = fields.Email(required=True)
 
 
+class RenovarContraseñaSchema(Schema):
+    password = fields.String(required=True, validate=validate.Length(min=8, max=255))
+    token = fields.String(required=True, validate=validate.Length(max=25))
+
+
 # Crear una instancia del esquema para usar en la validación
 registro_schema = RegistroSchema()
 confirmar_registro_schema = ConfirmarRegistroSchema()
 recuperar_contraseña_schema = RecuperarContraseñaSchema()
+renovar_contraseña_schema = RenovarContraseñaSchema()

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_mail import Mail
 from flask_mail import Message
-from src.web.helpers.produccion import es_produccion
+from .produccion import es_produccion
 
 mail = Mail()
 

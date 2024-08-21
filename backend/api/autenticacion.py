@@ -11,6 +11,7 @@ from backend.models.usuario import (
     chequear_usuario,
     buscar_usuario_por_id,
     buscar_usuario_por_email,
+    buscar_usuario_por_token,
     es_admin,
     renovar_password,
     renovar_token,
@@ -19,6 +20,7 @@ from backend.models.schemas.autenticacion import autenticacion_schema, perfil_sc
 from backend.models.schemas.registro import (
     confirmar_registro_schema,
     recuperar_contraseña_schema,
+    renovar_contraseña_schema,
 )
 from marshmallow import ValidationError
 from backend.helpers.produccion import conseguir_url
@@ -81,7 +83,7 @@ def profile():
 
 @api_autenticacion_bp.post("/recuperar_password")
 def recuperar_password():
-    """Envia un mail al usuario autenticado con un token para cambiar la contraseña"""
+    """Envia un mail al usuario autenticado con un token para cambiar la contraseña, recibe email"""
 
     try:
         req_data = request.json
@@ -102,22 +104,26 @@ def recuperar_password():
 
 @api_autenticacion_bp.post("/cambiar_password")
 def cambiar_password():
-    """Cambia la contraseña del usuario, en la url llega como parametro email y token"""
+    """Cambia la contraseña del usuario, llega en el body token y password"""
 
     try:
-        data_validada = confirmar_registro_schema.load(request.args)
+        req_data = request.json
+    except UnsupportedMediaType:
+        return {"error": "Debe proveer email en el contenido json de la peticion"}, 400
+
+    try:
+        data_validada = renovar_contraseña_schema.load(req_data)
     except ValidationError:
         return (
             jsonify(
                 {
-                    "error": "Parametros invalidos, debe proporcionar email y password que cumplan los requisitos"
+                    "error": "Parametros invalidos, debe proporcionar password y token que cumplan los requisitos"
                 }
             ),
             400,
         )
 
-    usuario = buscar_usuario_por_id(id_usuario)
-    renovar_password(usuario.email, data_validada["password"], usuario.token)
+    renovar_password(data_validada["password"], data_validada["token"])
 
     return jsonify({"message": "Contraseña actualizada"}), 200
 

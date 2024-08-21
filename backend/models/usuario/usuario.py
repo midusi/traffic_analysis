@@ -13,7 +13,7 @@ class Usuario(db.Model):
     apellido = db.Column(db.String(25), nullable=True)
     admin = db.Column(db.Boolean, nullable=False)
     activo = db.Column(db.Boolean, nullable=False)
-    token = db.Column(db.String(255), nullable=True, unique=True)
+    token = db.Column(db.String(25), nullable=True, unique=True)
     token_expiracion = db.Column(db.DateTime, nullable=True)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(

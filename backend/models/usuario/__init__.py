@@ -39,11 +39,12 @@ def crear_usuario(nombre, apellido, email, admin, password):
     return usuario
 
 
-def renovar_password(email, password, token):
+def renovar_password(password, token):
     """Renueva la password de un usuario con email y password, si el token es valido e invalida el token, devuelve True si se realizo la operacion"""
-    usuario = buscar_usuario_por_email(email)
+    usuario = buscar_usuario_por_token(token)
     if (
-        usuario.token_expiracion is None
+        not usuario
+        or usuario.token_expiracion is None
         or usuario.token_expiracion < datetime.now()
         or usuario.token != token
     ):
@@ -80,6 +81,11 @@ def buscar_usuario_por_email(email):
 def buscar_usuario_por_id(id):
     """Devuelve al usuario con el id dado"""
     return Usuario.query.filter_by(id=id).first()
+
+
+def buscar_usuario_por_token(token):
+    """Devuelve al usuario con el token de seguridad dado"""
+    return Usuario.query.filter_by(token=token).first()
 
 
 def chequear_usuario(email, password):
