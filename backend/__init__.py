@@ -4,6 +4,7 @@ from backend.models import database, seeds, prueba
 from os import urandom
 from backend.api import api_blueprint
 from flask_jwt_extended import JWTManager
+from backend.helpers.mail import mail
 
 
 def create_app(env="development", static_folder="../../static"):
@@ -17,7 +18,7 @@ def create_app(env="development", static_folder="../../static"):
     # Inicializo la base de datos
     database.init_app(app)
     JWTManager(app)
-    # mail.init_app(app)
+    mail.init_app(app)
 
     # Registramos blueprint principal
     app.register_blueprint(api_blueprint)

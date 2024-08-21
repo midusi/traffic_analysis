@@ -5,7 +5,6 @@ class RegistroSchema(Schema):
     nombre = fields.String(required=True, validate=validate.Length(min=1, max=25))
     apellido = fields.String(required=True, validate=validate.Length(min=1, max=25))
     email = fields.Email(required=True)
-    password = fields.String(required=True, validate=validate.Length(min=8))
     admin = fields.Boolean(required=True)
 
 

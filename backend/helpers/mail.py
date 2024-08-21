@@ -17,7 +17,7 @@ def enviar_mail(asunto, destinatario, html="", mensaje=""):
     sino se imprime en consola.
     """
 
-    if es_produccion:
+    if es_produccion():
         msg = Message(asunto, recipients=[destinatario], html=html, body=mensaje)
         mail.send(msg)
     else:

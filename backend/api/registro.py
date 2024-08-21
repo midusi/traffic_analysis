@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, url_for
+from flask import Blueprint, jsonify, request
 from backend.helpers.mail import enviar_mail
 from backend.helpers.produccion import conseguir_url
 from backend.models.usuario import (
@@ -6,12 +6,15 @@ from backend.models.usuario import (
     buscar_usuario_por_email,
     renovar_password,
 )
-from backend.models.schemas.registro import registro_schema, confirmar_registro_schema
+from backend.models.schemas.registro import (
+    registro_schema,
+    renovar_contraseña_schema,
+)
 from marshmallow import ValidationError
 import secrets
 from werkzeug.exceptions import UnsupportedMediaType
 
-registro_bp = Blueprint("registro", __name__, url_prefix="/auth/registro")
+registro_bp = Blueprint("registro", __name__, url_prefix="/registro")
 
 
 @registro_bp.post("/")
@@ -69,7 +72,7 @@ def confirmar_registro():
         }, 400
 
     try:
-        data = confirmar_registro_schema.load(req_data)
+        data = renovar_contraseña_schema.load(req_data)
     except ValidationError as err:
         return jsonify({"errors": err.messages}), 422
 
@@ -140,8 +143,6 @@ def crear_mail(email, token):
     </div>
 </body>
 </html>
-""".format(
-        conseguir_url(), email, token
-    )
+""".format(conseguir_url(), email, token)
 
-    enviar_mail("Confirmación de cuenta", email, html=html)
+    enviar_mail(asunto="Confirmación de cuenta", destinatario=email, html=html)
