@@ -1,4 +1,4 @@
-from src.web import create_app
+from backend import create_app
 from pathlib import Path
 
 static_folder = Path(__file__).parent.joinpath("static")

@@ -1,0 +1,12 @@
+# TODO:
+Testear:
+registro
+recuperar contraseña
+
+Refactorizar:
+Validacion de json
+Validacion de schemas
+Creacion de mails
+
+Seguridad en renovar la pass:
+Para la seguridad del token, se podria registrar la ip y chequear que sea la misma ip que pide la renovacion de contraseña. Esto se haria tanto en el link de primer login que llega al mail cuando se registra o en el link de recuperar contraseña.
