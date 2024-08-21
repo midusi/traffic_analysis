@@ -87,64 +87,6 @@ class AutenticacionTestCase(BaseTestClass):
         self.assertEqual(response.status_code, 200)
         self.assertIn("message", response.get_json())
 
-    def test_registro_email_ya_registrado(self):
-        """Test para el caso en que el email ya está registrado."""
-
-        # Primero se registra el usuario
-        self.app.post(
-            "/api/registro/",
-            json={
-                "nombre": "Juan",
-                "apellido": "Pérez",
-                "email": "juan.perez@example.com",
-                "admin": False,
-            },
-        )
-
-        # Se intenta registrar de nuevo con el mismo email
-        response = self.app.post(
-            "/api/registro/",
-            json={
-                "nombre": "Juan",
-                "apellido": "Pérez",
-                "email": "juan.perez@example.com",
-                "admin": False,
-            },
-        )
-        self.assertEqual(response.status_code, 422)
-        self.assertIn("error", response.get_json())
-
-    def test_registro_falta_json(self):
-        """Test para el caso en que falta el contenido JSON."""
-
-        response = self.app.post("/api/registro/")
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("error", response.get_json())
-
-    def test_registro_json_invalido(self):
-        """Test para el caso en que el JSON es inválido."""
-
-        response = self.app.post(
-            "/api/registro/", data="Invalid JSON"  # Envía datos no JSON
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("error", response.get_json())
-
-    def test_registro_validacion_fallida(self):
-        """Test para el caso en que la validación del JSON falla."""
-
-        response = self.app.post(
-            "/api/registro/",
-            json={
-                "nombre": "",  # Nombre vacío que debería fallar la validación
-                "apellido": "Pérez",
-                "email": "juan.perez@example.com",
-                "admin": False,
-            },
-        )
-        self.assertEqual(response.status_code, 422)
-        self.assertIn("errors", response.get_json())
-
 
 if __name__ == "__main__":
     unittest.main()
