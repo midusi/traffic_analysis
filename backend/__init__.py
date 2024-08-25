@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from flask_cors import CORS
 from backend.config import config
 from backend.models import database, seeds, prueba
 from os import urandom
@@ -14,6 +15,9 @@ def create_app(env="development", static_folder="../../static"):
     # Configuro el entorno
     app.secret_key = urandom(24)
     app.config.from_object(config[env])
+
+    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
     # Inicializo la base de datos
     database.init_app(app)

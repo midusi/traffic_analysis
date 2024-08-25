@@ -8,5 +8,5 @@ def create_prueba(**kwargs):
     return prueba
 
 
-def list_pruebas():
-    return Prueba.query.all()
+def list_pruebas(page, per_page):
+    return Prueba.query.paginate(page=page, per_page=per_page, error_out=True)
