@@ -22,6 +22,12 @@ supervision package for multiple tasks such as tracking, annotations, etc.
   pip install -r requirements.txt
   ```
 
+  - download `traffic_analysis.pt`
+  
+  ```bash
+  gdown -O "$DIR/data/traffic_analysis.pt" "https://drive.google.com/uc?id=1y-IfToCjRXa3ZdC1JpnKRopC7mcQW-5z"
+  ```
+
 ## 🛠️ script arguments
 
 - ultralytics
