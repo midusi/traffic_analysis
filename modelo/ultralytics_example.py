@@ -10,6 +10,21 @@ import supervision as sv
 
 COLORS = sv.ColorPalette.from_hex(["#E6194B", "#3CB44B", "#FFE119", "#3C76D1"])
 
+# Polygons para usar en el video de prueba "download"
+# ZONE_IN_POLYGONS = [
+#     np.array([[950, 282], [1250, 282], [1250, 82], [950, 82]]),
+#     np.array([[950, 860], [1250, 860], [1250, 1060], [950, 1060]]),
+#     np.array([[592, 582], [592, 860], [392, 860], [392, 582]]),
+#     np.array([[1250, 282], [1250, 530], [1450, 530], [1450, 282]]),
+# ]
+
+# ZONE_OUT_POLYGONS = [
+#     np.array([[592, 282], [900, 282], [900, 82], [592, 82]]),
+#     np.array([[592, 860], [900, 860], [900, 1060], [592, 1060]]),
+#     np.array([[592, 282], [592, 550], [392, 550], [392, 282]]),
+#     np.array([[1250, 860], [1250, 560], [1450, 560], [1450, 860]]),
+# ]
+
 #### Polygons para usar en el video otro_minuto
 ZONE_IN_POLYGONS = [
     np.array([[980, 282], [1120, 262], [1210, 82], [1140, 82]]), #ROJO
@@ -52,12 +67,6 @@ class DetectionsManager:
         detections_in_zones: List[sv.Detections],
         detections_out_zones: List[sv.Detections],
     ) -> sv.Detections:
-        # List[sv.Detections] = 
-        # Detections
-        # (xyxy=array([[251.42,495.49,296.02,526.29]], 
-        # dtype=float32), mask=None, confidence=array([0.516], 
-        # dtype=float32), class_id=array([0]), tracker_id=array([82]), 
-        # data={'class_name': array(['car'], dtype='<U3')})
         for zone_in_id, detections_in_zone in enumerate(detections_in_zones):
             for tracker_id in detections_in_zone.tracker_id:
                 self.tracker_id_to_zone_id.setdefault(tracker_id, zone_in_id)
@@ -120,14 +129,15 @@ class VideoProcessor:
             color=COLORS, position=sv.Position.CENTER, trace_length=100, thickness=2
         )
         self.detections_manager = DetectionsManager()
-        # Clases a detectar
         self.classes = {
-            1: "Bicicleta",
-            2: "Auto",
-            3: "Moto",
-            5: "Colectivo",
-            7: "Camión",
+            "car": "Auto",
+            "bus": "Colectivo",
+            "truck": "Camión",
+            "van": "Camioneta",
         }
+
+    def get_confidence(self, confidence: float):
+        return "{:.0f}%".format(confidence * 100)
 
     def process_video(self):
         frame_generator = sv.get_video_frames_generator(
@@ -159,9 +169,8 @@ class VideoProcessor:
                 annotated_frame, zone_out.polygon, COLORS.colors[i]
             )
 
-        # label a visualizar en el Bounding Box
-        # labels = ["{:.0f}%".format(confidence * 100) for confidence in detections.confidence]
-        labels = [f"#{tracker_id}" for tracker_id in detections.tracker_id]
+        # labels a visualizar en el Bounding Box
+        labels = [f"{self.classes[class_name]} - {self.get_confidence(confidence)}" for class_name, confidence in zip(detections.data["class_name"], detections.confidence)]
         annotated_frame = self.trace_annotator.annotate(annotated_frame, detections)
         annotated_frame = self.box_annotator.annotate(annotated_frame, detections)
         annotated_frame = self.label_annotator.annotate(
@@ -186,10 +195,10 @@ class VideoProcessor:
 
     def process_frame(self, frame: np.ndarray) -> np.ndarray:
         results = self.model(
-            frame, verbose=False, conf=self.conf_threshold, iou=self.iou_threshold, classes=list(self.classes.keys())
+            frame, verbose=False, imgsz=1280, conf=self.conf_threshold, iou=self.iou_threshold
         )[0]
         detections = sv.Detections.from_ultralytics(results) # Obtiene los resultados de las detecciones
-        detections.class_id = np.zeros(len(detections)) # Crea un arreglo contabilizador de clases para las detecciones
+        detections.class_id = np.zeros(len(detections)) # Crea un arreglo con tantas posiciones como objetos detectados
         detections = self.tracker.update_with_detections(detections)
 
         detections_in_zones = []
