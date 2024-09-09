@@ -63,7 +63,7 @@ export default {
     },
 
     computed: {
-        ...mapState(useAuthStore, ['loading', 'error']),
+        ...mapState(useAuthStore, ['loading', 'errors']),
     },
 
     methods: {
@@ -71,7 +71,12 @@ export default {
         ...mapActions(useAuthStore, ['loginUser']),
 
         async login() {
-            await this.loginUser({ email: this.email, password: this.password });
+            await this.loginUser(this.email, this.password);
+            if (this.errors != null) {
+                this.$toast.error(this.errors)
+            } else {
+                this.$router.push("/prueba")
+            }
         },
 
     },

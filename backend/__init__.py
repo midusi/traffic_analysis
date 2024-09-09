@@ -17,7 +17,7 @@ def create_app(env="development", static_folder="../../static"):
     app.config.from_object(config[env])
 
     CORS(app)
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
     # Inicializo la base de datos
     database.init_app(app)

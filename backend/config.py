@@ -16,6 +16,7 @@ class Config(object):
     JWT_SECRET_KEY = "clave_recontra_secreta"
     JWT_TOKEN_LOCATION = ["cookies"]
     JWT_ACCESS_COOKIE_NAME = "access_token_cookie"
+    CORS_SUPPORTS_CREDENTIALS = True
 
 
 class ProductionConfig(Config):

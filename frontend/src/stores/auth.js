@@ -1,38 +1,36 @@
 import { defineStore } from 'pinia'
 import { apiService } from '@/services/api';
-import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
         isAuthenticated: false,
         loading: false,
-        error: null,
+        errors: null,
     }),
     actions: {
-        async loginUser(credentials) {
+        async loginUser(email, password) {
             this.loading = true
-            this.error = null
+            this.errors = null
             try {
-                const response = await axios.post(import.meta.env.VITE_API_URL + "auth", {
-                    withCredentials: true, // Importante para enviar cookies
+                const response = await apiService.post("auth/", {
+                    "email": email,
+                    "password": password
                 })
-
                 if (response.status !== 200) {
                     throw new Error('Login failed')
                 }
 
-                // Obtener la información del usuario
                 await this.fetchUser()
             } catch (error) {
-                this.error = error.response ? error.response.data.message : error.message
+                this.errors = error.response ? error.response.data.error : error.message
             } finally {
                 this.loading = false
             }
         },
         async logoutUser() {
             this.loading = true
-            this.error = null
+            this.errors = null
             try {
                 const response = await apiService.post('logout', {})
 
@@ -40,18 +38,17 @@ export const useAuthStore = defineStore('auth', {
                     throw new Error('Logout failed')
                 }
 
-                // Limpiar el estado
                 this.user = null
                 this.isAuthenticated = false
             } catch (error) {
-                this.error = error.response ? error.response.data.message : error.message
+                this.errors = error.response ? error.response.data.error : error.message
             } finally {
                 this.loading = false
             }
         },
         async fetchUser() {
             try {
-                const response = await apiService.get('me')
+                const response = await apiService.get('auth/me')
 
                 if (response.status === 200) {
                     this.user = response.data
@@ -62,7 +59,7 @@ export const useAuthStore = defineStore('auth', {
             } catch (error) {
                 this.user = null
                 this.isAuthenticated = false
-                this.error = error.response ? error.response.data.message : error.message
+                this.errors = error.response ? error.response.data.error : error.message
             }
         },
     },
