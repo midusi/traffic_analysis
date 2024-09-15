@@ -1,32 +1,45 @@
 <template>
-  <div>
-    <div class="container">
-      <video ref="video" src="./otro minuto.mp4" @loadeddata="adjustCanvasSize"></video>
-      <canvas ref="canvas"></canvas>
-    </div>
+  <div class="container text-center">
 
-    <div class="buttons">
-      <button @click="finalizarPoly">Finalizar Polígono</button>
-      <button @click="cancelarPoly">Cancelar Polígono</button>
-      <button @click="deshacerPoly">Deshacer Polígono</button>
-      <button @click="rehacerPoly">Rehacer Polígono</button>
-      <button @click="limpiarCanvas">Limpiar Canvas</button>
-    </div>
-    
-    <label for="tipo">Tipo</label>
-    <select v-model="tipo">
-      <option value="Entrada">Entrada</option>
-      <option value="Salida">Salida</option>
-      <option value="Exclusion">Exclusión</option>
-    </select>
+    <div class="row justify-content-center align-items-start">
+      <!-- Video y Canvas -->
+      <div class="col-lg-7 mb-4 position-relative">
+        <video ref="video" class="video-fluid" src="./otro minuto.mp4" @loadeddata="adjustCanvasSize"></video>
+        <canvas ref="canvas" class="position-absolute"></canvas>
+      </div>
 
-    <ol ref="polygonList">
-      <li v-for="(polygon, index) in polygons" :key="index">
-        {{ polygon.tipo }}
-        <button @click="eliminarPoly(index)">Eliminar</button>
-        <button @click="cambiarTipo(index)">Cambiar Tipo</button>
-      </li>
-    </ol>
+      <!-- Botones y Lista de Polígonos -->
+      <div class="col-lg-3">
+        <div class="mb-3 d-flex flex-column">
+          <button class="btn btn-primary mb-2 btn-block" @click="finalizarPoly">Finalizar Polígono</button>
+          <button class="btn btn-warning mb-2 btn-block" @click="deshacerPoly">Deshacer Polígono</button>
+          <button class="btn btn-secondary mb-2 btn-block" @click="cancelarPoly">Cancelar Polígono</button>
+          <button class="btn btn-info mb-2 btn-block" @click="rehacerPoly">Rehacer Polígono</button>
+          <button class="btn btn-danger mb-2 btn-block" @click="limpiarCanvas">Limpiar Canvas</button>
+        </div>
+
+        <!-- Selector de Tipo -->
+        <div class="mb-4">
+          <label for="tipo" class="form-label">Tipo</label>
+          <select v-model="tipo" class="form-select">
+            <option value="Entrada">Entrada</option>
+            <option value="Salida">Salida</option>
+            <option value="Exclusion">Exclusión</option>
+          </select>
+        </div>
+
+        <!-- Lista de Polígonos -->
+        <ol ref="polygonList" class="list-group">
+          <li v-for="(polygon, index) in polygons" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ polygon.tipo }}</span>
+            <div class="btn-group">
+              <button class="btn btn-danger btn-sm" @click="eliminarPoly(index)">Eliminar</button>
+              <button class="btn btn-secondary btn-sm" @click="cambiarTipo(index)">Cambiar Tipo</button>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -217,46 +230,78 @@ export default {
 
 <style scoped>
 body {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #333;
+  background-color: #2e2e2e;
+  color: #f1f1f1;
+  font-family: 'Arial', sans-serif;
 }
-.container {
-  position: relative;
-}
-video {
-  width: 640px;
-  height: 360px;
-}
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.buttons {
-  margin-top: 10px;
-}
-button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
-</style>
 
-<style scoped>
+h1 {
+  font-size: 2.5rem;
+  color: #f1f1f1;
+}
+
+.container {
+  padding-top: 2rem;
+}
+
 .video-fluid {
   width: 100%;
   height: auto;
-}
-.list-group-item {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  margin-bottom: 0.5rem;
+  border: 2px solid #ddd;
   border-radius: 5px;
+}
+
+canvas {
+  top: 0;
+  left: 0;
+}
+
+.list-group-item {
+  background-color: #444;
+  color: #f1f1f1;
+  border: none;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.btn-group button {
+  margin-left: 5px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border: none;
+}
+
+select.form-select {
+  background-color: #444;
+  color: #f1f1f1;
+  border: none;
+}
+
+option {
+  background-color: #444;
+  color: #f1f1f1;
 }
 </style>
