@@ -11,10 +11,10 @@
       <!-- Botones y Lista de Polígonos -->
       <div class="col-lg-3">
         <div class="mb-3 d-flex flex-column">
-          <button class="btn btn-primary mb-2 btn-block" @click="finalizarPoly">Finalizar Polígono</button>
-          <button class="btn btn-warning mb-2 btn-block" @click="deshacerPoly">Deshacer Polígono</button>
-          <button class="btn btn-secondary mb-2 btn-block" @click="cancelarPoly">Cancelar Polígono</button>
-          <button class="btn btn-info mb-2 btn-block" @click="rehacerPoly">Rehacer Polígono</button>
+          <button class="btn btn-primary mb-2 btn-block" @click="finalizarPoly">Finalizar Polígono (f)</button>
+          <button class="btn btn-warning mb-2 btn-block" @click="deshacerPoly">Deshacer Polígono (Ctrl-z)</button>
+          <button class="btn btn-secondary mb-2 btn-block" @click="cancelarPoly">Cancelar Polígono (Esc)</button>
+          <button class="btn btn-info mb-2 btn-block" @click="rehacerPoly">Rehacer Polígono (Ctrl-r)</button>
           <button class="btn btn-danger mb-2 btn-block" @click="limpiarCanvas">Limpiar Canvas</button>
         </div>
 
@@ -33,8 +33,8 @@
           <li v-for="(polygon, index) in polygons" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
             <span>{{ polygon.tipo }}</span>
             <div class="btn-group">
-              <button class="btn btn-danger btn-sm" @click="eliminarPoly(index)">Eliminar</button>
-              <button class="btn btn-secondary btn-sm" @click="cambiarTipo(index)">Cambiar Tipo</button>
+              <button class="btn btn-danger btn-sm" @click="eliminarPoly(index)">Eliminar (d)</button>
+              <button class="btn btn-secondary btn-sm" @click="cambiarTipo(index)">Cambiar Tipo (t)</button>
             </div>
           </li>
         </ol>
@@ -63,6 +63,7 @@ export default {
       }
     };
   },
+
   methods: {
     adjustCanvasSize() {
       const canvas = this.$refs.canvas;
@@ -70,11 +71,13 @@ export default {
       canvas.width = video.clientWidth;
       canvas.height = video.clientHeight;
     },
+
     getMousePosition(event) {
       const canvas = this.$refs.canvas;
       const rect = canvas.getBoundingClientRect();
       return [event.clientX - rect.left, event.clientY - rect.top];
     },
+
     drawPolygons(polys) {
       const ctx = this.ctx;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Limpiar canvas
@@ -90,23 +93,27 @@ export default {
         ctx.stroke();
       });
     },
+
     cleanActualPath() {
       this.currentPolygon.points = [];
       this.isDrawing = false;
       this.drawPolygons(this.polygons);
     },
+
     deshacerPoly() {
       if (this.polygons.length > 0) {
         this.deletedPolygons.push(this.polygons.pop());
         this.cleanActualPath();
       }
     },
+
     rehacerPoly() {
       if (this.deletedPolygons.length > 0) {
         this.polygons.push(this.deletedPolygons.pop());
         this.cleanActualPath();
       }
     },
+
     finalizarPoly() {
       if (this.currentPolygon.points.length >= 3) {
         this.polygons.push({ points: [...this.currentPolygon.points], tipo: this.tipo });
@@ -123,24 +130,29 @@ export default {
         this.cleanActualPath();
       }
     },
+    
     eliminarPoly(index) {
       this.polygons.splice(index, 1);
       this.cleanActualPath();
     },
+    
     cambiarTipo(index) {
       const polygon = this.polygons[index];
       polygon.tipo = this.ciclarTipo(polygon.tipo);
       this.cleanActualPath();
     },
+    
     toggleTipo() {
       this.tipo = this.ciclarTipo(this.tipo);
     },
+
     ciclarTipo(tipo) {
       const tipos = ['Entrada', 'Salida', 'Exclusion'];
       let i = tipos.indexOf(tipo);
       i = (i + 1) % tipos.length;
       return tipos[i];
     },
+
     highlightPolygon(index) {
       if (this.highlightedPolygonIndex !== index) {
         this.removePolygonHighlight();
@@ -152,6 +164,7 @@ export default {
         this.cleanActualPath();
       }
     },
+
     removePolygonHighlight() {
       if (this.highlightedPolygonIndex !== null) {
         const previousListItem = this.polygonList.children[this.highlightedPolygonIndex]
@@ -161,6 +174,7 @@ export default {
         this.cleanActualPath(); // Redibuja para quitar el resaltado
       }
     },
+
     isMouseInPolygon(mousePos, polygon) {
       let isInside = false;
       for (let i = 0, j = polygon.points.length - 1; i < polygon.points.length; j = i++) {
@@ -176,6 +190,7 @@ export default {
       return isInside;
     },
   },
+
   mounted() {
     this.polygonList = this.$refs.polygonList
     this.canvas = this.$refs.canvas;
@@ -217,9 +232,18 @@ export default {
         this.rehacerPoly();
       }
       else if (e.key === 'Escape') this.cancelarPoly();
-      else if (e.key === 't') this.toggleTipo();
+      else if (e.key === 't') {
+        if (this.highlightedPolygonIndex !== null) {
+          this.cambiarTipo(this.highlightedPolygonIndex);
+        } else this.toggleTipo();
+      } else if (e.key == 'd') {
+        if(this.highlightedPolygonIndex !== null){
+          this.eliminarPoly(this.highlightedPolygonIndex);
+        }
+      } 
     });
   },
+
   watch: {
     tipo() {
       this.currentPolygon.tipo = this.tipo;
