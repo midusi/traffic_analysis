@@ -44,6 +44,15 @@
 </template>
 
 <script>
+let canvas = null;
+let ctx = null;
+let polygonList = null;
+const colores = {
+  Entrada: 'lightgreen',
+  Salida: 'blue',
+  Exclusion: 'red'
+};
+
 export default {
   data() {
     return {
@@ -53,34 +62,24 @@ export default {
       polygons: [],
       deletedPolygons: [],
       highlightedPolygonIndex: null,
-      canvas: null,
-      ctx: null,
-      polygonList: null,
-      colores: {
-        Entrada: 'lightgreen',
-        Salida: 'blue',
-        Exclusion: 'red'
-      }
     };
   },
 
   methods: {
     adjustCanvasSize() {
-      const canvas = this.$refs.canvas;
       const video = this.$refs.video;
-      canvas.width = video.clientWidth;
-      canvas.height = video.clientHeight;
+      this.canvas.width = video.clientWidth;
+      this.canvas.height = video.clientHeight;
     },
 
     getMousePosition(event) {
-      const canvas = this.$refs.canvas;
-      const rect = canvas.getBoundingClientRect();
+      const rect = this.canvas.getBoundingClientRect();
       return [event.clientX - rect.left, event.clientY - rect.top];
     },
 
     drawPolygons(polys) {
       const ctx = this.ctx;
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Limpiar canvas
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       polys.forEach((polygon, index) => {
         ctx.beginPath();
         ctx.moveTo(polygon.points[0][0], polygon.points[0][1]);
@@ -88,7 +87,7 @@ export default {
           ctx.lineTo(polygon.points[i][0], polygon.points[i][1]);
         }
         ctx.closePath();
-        ctx.strokeStyle = this.colores[polygon.tipo];
+        ctx.strokeStyle = colores[polygon.tipo];
         ctx.lineWidth = index === this.highlightedPolygonIndex ? 2.5 : 1.5; // Aumenta el grosor si está resaltado
         ctx.stroke();
       });
@@ -120,9 +119,11 @@ export default {
       }
       this.cleanActualPath();
     },
+
     cancelarPoly() {
       this.cleanActualPath();
     },
+
     limpiarCanvas() {
       if (confirm("¿Estás seguro?")) {
         this.polygons = [];
