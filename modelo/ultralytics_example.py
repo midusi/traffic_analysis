@@ -27,10 +27,10 @@ COLORS = sv.ColorPalette.from_hex(["#E6194B", "#3CB44B", "#FFE119", "#3C76D1"])
 
 #### Polygons para usar en el video otro_minuto
 ZONE_IN_POLYGONS = [
-    np.array([[980, 282], [1120, 262], [1210, 82], [1140, 82]]), #ROJO
-    np.array([[850, 850], [1050, 900], [950, 1060], [730, 1060]]), #VERDE
-    np.array([[300, 400], [300, 460], [65, 410], [65, 360]]), #AMARILLO
-    np.array([[1450, 492], [1450, 600], [1750, 690], [1750, 510]]), #AZUL
+    # np.array([[980, 282], [1120, 262], [1210, 82], [1140, 82]]), #ROJO
+    # np.array([[850, 850], [1050, 900], [950, 1060], [730, 1060]]), #VERDE
+    # np.array([[300, 400], [300, 460], [65, 410], [65, 360]]), #AMARILLO
+    # np.array([[1450, 492], [1450, 600], [1750, 690], [1920, 510]]), #AZUL
 ]
 
 ZONE_OUT_POLYGONS = [
@@ -118,8 +118,8 @@ class VideoProcessor:
         self.tracker = sv.ByteTrack()
 
         self.video_info = sv.VideoInfo.from_video_path(source_video_path)
-        self.zones_in = initiate_polygon_zones(ZONE_IN_POLYGONS, [sv.Position.CENTER])
-        self.zones_out = initiate_polygon_zones(ZONE_OUT_POLYGONS, [sv.Position.CENTER])
+        self.zones_in = []
+        self.zones_out = []
 
         self.box_annotator = sv.BoxAnnotator(color=COLORS)
         self.label_annotator = sv.LabelAnnotator(
@@ -143,6 +143,22 @@ class VideoProcessor:
         frame_generator = sv.get_video_frames_generator(
             source_path=self.source_video_path
         )
+
+        scalar_x = self.video_info.width / 800
+        scalar_y = self.video_info.height / 450
+        original_polygon = np.array(
+            [
+                [312.4444274902344,425.0173568725586],
+                [373.4444274902344,363.0173568725586],
+                [423.4444274902344,347.0173568725586],
+                [451.4444274902344,370.0173568725586],
+                [351.4444274902344,443.0173568725586]
+            ])
+
+        # Redimensionar el polígono e inicializar zonas
+        resized_polygon = np.array([[x * scalar_x, y * scalar_y] for x, y in original_polygon]).astype(np.int32)
+        self.zones_in = initiate_polygon_zones([resized_polygon], [sv.Position.CENTER])
+        self.zones_out = initiate_polygon_zones(ZONE_OUT_POLYGONS, [sv.Position.CENTER])
 
         if self.target_video_path:
             with sv.VideoSink(self.target_video_path, self.video_info) as sink:
