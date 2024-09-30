@@ -161,3 +161,4 @@ cython_debug/
 .envrc
 
 flask_session
+frontend/src/components/canvas/otro minuto.mp4

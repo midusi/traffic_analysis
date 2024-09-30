@@ -7,5 +7,6 @@ pkgs.mkShell {
     pkgs.pkg-config
     pkgs.libmysqlclient
     pkgs.python312Packages.setuptools
+    pkgs.nodejs
   ];
 }
