@@ -38,6 +38,9 @@
                             <p class="small pb-lg-2">Olvidaste tu contraseña?. <a
                                     class="text-decoration-none fw-semibold" href="#!"
                                     style="color: #0b5757">Recuperar</a></p>
+                            
+
+                            <p class="small pb-lg-2">Aún no está registrado?. <router-link :to="'/usuarios/registro/'" class="text-decoration-none fw-semibold" style="color: #0b5757">Registrarse</router-link></p>
 
                             <button class="btn text-white w-100 mt-2 fw-semibold shadow-sm" type="submit"
                                 :disabled="loading" style="background-color: #0b5757">Iniciar
