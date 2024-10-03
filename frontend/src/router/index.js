@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/usuarios/LoginView.vue'
 import PruebaView from '../views/prueba/PruebaView.vue'
 import RegistroUsuarioView from '../views/usuarios/RegistroUsuarioView.vue'
+import RegistroUsuarioConfirmacionView from '../views/usuarios/RegistroUsuarioConfirmacionView.vue'
 
 
 const router = createRouter({
@@ -21,6 +22,7 @@ const router = createRouter({
       path: "/usuarios",
       children: [
         { path: 'registro', component: RegistroUsuarioView },
+        { path: 'confirmar/:token', component: RegistroUsuarioConfirmacionView, props: true },
       ],
     },
   ]

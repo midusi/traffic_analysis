@@ -43,7 +43,6 @@ def registro():
         nombre=data["nombre"],
         apellido=data["apellido"],
         email=data["email"],
-        admin=data["admin"],
         password=random,  # setea una contraseña cualquiera para impedir el acceso sin haber verificado el mail
     )
     crear_mail(data["email"], usr.token)
@@ -74,7 +73,7 @@ def confirmar_registro():
     try:
         data = renovar_contraseña_schema.load(req_data)
     except ValidationError as err:
-        return jsonify({"errors": err.messages}), 422
+        return jsonify({"error": err.messages}), 422
 
     valid = renovar_password(password=data["password"], token=data["token"])
     if not valid:
@@ -139,7 +138,7 @@ def crear_mail(email, token):
     <div class="container">
         <h1> Ha sido registrado en el sistema 🤝</h1>
         <p>Establecé una contraseña y terminá el registro usando el siguiente link:</p>
-        <p><a href="{0}/auth/registro/confirmar?email={1}&token={2}">Confirmar</a></p>
+        <p><a href="{0}usuarios/confirmar/{2}">Confirmar</a></p>
     </div>
 </body>
 </html>

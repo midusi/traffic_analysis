@@ -22,7 +22,7 @@ def listar_usuarios_paginated(page, per_page, email=None, activo=None):
     return usuarios
 
 
-def crear_usuario(nombre, apellido, email, admin, password):
+def crear_usuario(nombre, apellido, email, password):
     """
     Carga al usuario en la bd hasheando la contraseña
     """
@@ -30,7 +30,7 @@ def crear_usuario(nombre, apellido, email, admin, password):
     password = hashear_password(password)
 
     usuario = Usuario(
-        password=password, email=email, nombre=nombre, apellido=apellido, admin=admin
+        password=password, email=email, nombre=nombre, apellido=apellido
     )
 
     db.session.add(usuario)

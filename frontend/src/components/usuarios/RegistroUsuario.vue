@@ -45,25 +45,10 @@
                                             d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z" />
                                     </svg>
                                 </div>
-                                <input v-model="persona.email" class="form-control" type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" name="email" id="email"
+                                <input v-model="persona.email" class="form-control" type="email" name="email" id="email"
                                     placeholder="Email" required/>
                                 <div class="invalid-feedback">
                                     Debe ingresar un email con formato 'unusuario@unemail.com'.
-                                </div>
-                            </div>
-
-                            <div class="input-group mt-1 mb-4">
-                                <div class="input-group-text" style="background-color: #0b5757">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-lock-fill" style="color: white;" viewBox="0 0 16 16">
-                                        <path
-                                            d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
-                                    </svg>
-                                </div>
-                                <input v-model="persona.password" class="form-control" type="password" name="password"
-                                    id="password" placeholder="Contraseña" required/>
-                                <div class="invalid-feedback">
-                                    Debe ingresar una contraseña.
                                 </div>
                             </div>
 
@@ -86,8 +71,8 @@ export default {
                 nombre: '',
                 apellido: '',
                 email: '',
-                password:''
-            }
+            },
+            errores: [],
         }
     },
 
@@ -97,18 +82,20 @@ export default {
             console.log()
             if (form.checkValidity()) {
                 try {                                        
-                    await apiService.post(import.meta.env.VITE_API_URL + "usuarios/registrar",
+                    await apiService.post("registro/",
                         {
-                            persona: this.persona,
+                            nombre: this.persona.nombre,
+                            apellido: this.persona.apellido,
+                            email: this.persona.email,
                         })
                     .then((response) => {
                         if(response.status == 200) {
-                            this.$toast.success("Se ha registrado exitosamente");
+                            this.$toast.success(response.data.message);
                             this.$router.push("/");
                         }
                     })
                 } catch(error) {
-                    this.$toast.error(error);
+                    this.$toast.error(error.response.data.error);
                     this.errores.push(error);
                 }
             } else {
