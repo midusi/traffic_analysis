@@ -20,7 +20,7 @@
 
         <!-- Selector de Tipo -->
         <div class="mb-4">
-          <label for="tipo" class="form-label">Tipo</label>
+          <label for="tipo" class="form-label">Tipo (t)</label>
           <select v-model="tipo" class="form-select">
             <option value="Entrada">Entrada</option>
             <option value="Salida">Salida</option>
@@ -52,14 +52,15 @@ const colores = {
   Salida: 'blue',
   Exclusion: 'red'
 };
-
+let oldCanvasWidth = 0;
+let oldCanvasHeight = 0;
 export default {
   data() {
     return {
       isDrawing: false,
       tipo: 'Entrada',
       currentPolygon: { points: [], tipo: 'Entrada' },
-      polygons: [],
+      polygons: [],         // [{points: [[x,y],[x,y]...[x,y]], tipo: this.tipo}] 
       deletedPolygons: [],
       highlightedPolygonIndex: null,
     };
@@ -68,8 +69,11 @@ export default {
   methods: {
     adjustCanvasSize() {
       const video = this.$refs.video;
+      this.oldCanvasWidth = this.canvas.width;
+      this.oldCanvasHeight = this.canvas.height;
       this.canvas.width = video.clientWidth;
       this.canvas.height = video.clientHeight;
+      console.log(this.polygons)
     },
 
     getMousePosition(event) {
@@ -190,12 +194,36 @@ export default {
       }
       return isInside;
     },
+
+    resizePolygons(oldX, oldY, newX, newY) {
+      const scaleX = newX/oldX;
+      const scaleY = newY/oldY;
+      for(let polygon of this.polygons) {
+        for(let point of polygon.points) {
+          point[0] *= scaleX;
+          point[1] *= scaleY;
+        }
+      }
+      this.cleanActualPath();
+    }
   },
 
   mounted() {
     this.polygonList = this.$refs.polygonList
     this.canvas = this.$refs.canvas;
     this.ctx = this.canvas.getContext('2d');
+
+    window.addEventListener('resize', () => {
+      console.log(`Old width: ${this.oldCanvasWidth}, Old height: ${this.oldCanvasHeight}`);
+      
+      this.adjustCanvasSize();
+      
+      const newX = this.canvas.width;
+      const newY = this.canvas.height;
+      console.log(`New width: ${newX}, New height: ${newY}`);
+
+      this.resizePolygons(this.oldCanvasWidth, this.oldCanvasHeight, newX, newY);
+    });
 
     this.canvas.addEventListener('mousedown', (event) => {
       this.isDrawing = true;
@@ -243,6 +271,7 @@ export default {
         }
       } 
     });
+
   },
 
   watch: {
@@ -266,7 +295,7 @@ h1 {
 }
 
 .container {
-  padding-top: 2rem;
+  max-width: 100%; /* Asegúrate de que el contenedor ocupe el 100% de su contenedor padre */
 }
 
 .video-fluid {
