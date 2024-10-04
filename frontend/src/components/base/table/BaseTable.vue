@@ -6,7 +6,7 @@
             <div class="d-flex flex-row ms-auto align-items-center me-3">
                 <div class="d-flex flex-row align-items-center mb-3 me-2 column-gap-3">
                     <label>Filas por página: </label>
-                    <input class="form-control-sm bg-light" type="number" name="per_page" id="per_page" min="1"
+                    <input class="form-control-sm" type="number" name="per_page" id="per_page" min="1"
                         v-model="perPage" :max="datos.data.total" @input="$emit('changePage', 1, this.perPage)" />
                     <p class="mb-0">{{ datos.data.first + "-" + datos.data.last + " de " + datos.data.total }}</p>
                 </div>
