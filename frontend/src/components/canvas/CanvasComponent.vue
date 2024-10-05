@@ -31,10 +31,11 @@
         <!-- Lista de Polígonos -->
         <ol ref="polygonList" class="list-group">
           <li v-for="(polygon, index) in polygons" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
-            <span>{{ polygon.tipo }}</span>
+            <span>{{ polygon.name ? polygon.name : polygon.tipo  }}</span>
             <div class="btn-group">
               <button class="btn btn-danger btn-sm" @click="eliminarPoly(index)">Eliminar (d)</button>
               <button class="btn btn-secondary btn-sm" @click="cambiarTipo(index)">Cambiar Tipo (t)</button>
+              <button class="btn btn-secondary btn-sm" @click="cambiarNombre(index)">Cambiar nombre (r)</button>
             </div>
           </li>
         </ol>
@@ -73,7 +74,6 @@ export default {
       this.oldCanvasHeight = this.canvas.height;
       this.canvas.width = video.clientWidth;
       this.canvas.height = video.clientHeight;
-      console.log(this.polygons)
     },
 
     getMousePosition(event) {
@@ -205,7 +205,18 @@ export default {
         }
       }
       this.cleanActualPath();
-    }
+    },
+    
+    promptForName() {
+      return prompt("Ingrese el nuevo nombre del polígono:");
+    },
+    
+    cambiarNombre(index) {
+      const newName = this.promptForName();
+      if (newName !== null && newName.trim() !== '') {
+        this.polygons[index].name = newName;
+      }
+    },
   },
 
   mounted() {
@@ -213,15 +224,10 @@ export default {
     this.canvas = this.$refs.canvas;
     this.ctx = this.canvas.getContext('2d');
 
-    window.addEventListener('resize', () => {
-      console.log(`Old width: ${this.oldCanvasWidth}, Old height: ${this.oldCanvasHeight}`);
-      
-      this.adjustCanvasSize();
-      
+    window.addEventListener('resize', () => {      
+      this.adjustCanvasSize();      
       const newX = this.canvas.width;
       const newY = this.canvas.height;
-      console.log(`New width: ${newX}, New height: ${newY}`);
-
       this.resizePolygons(this.oldCanvasWidth, this.oldCanvasHeight, newX, newY);
     });
 
@@ -269,7 +275,11 @@ export default {
         if(this.highlightedPolygonIndex !== null){
           this.eliminarPoly(this.highlightedPolygonIndex);
         }
-      } 
+      } else if (e.key == 'r') {
+        if(this.highlightedPolygonIndex !== null) {
+          this.cambiarNombre(this.highlightedPolygonIndex);
+        }
+      }
     });
 
   },

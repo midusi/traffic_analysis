@@ -1,3 +1,4 @@
+Asignar nombre a las vias
 Arreglar las coordenadas de los poligonos (el padding, bordes y elementos css distorsionan las coordenadas reales)
 Chequear que las dimensiones de los poligonos son correctas despues de hacer resize
 Se enviaría al modelo los poligonos y la resolución que se utilizó para el canvas.
