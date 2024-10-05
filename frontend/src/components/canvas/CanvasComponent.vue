@@ -16,6 +16,7 @@
           <button class="btn btn-secondary mb-2 btn-block" @click="cancelarPoly">Cancelar Polígono (Esc)</button>
           <button class="btn btn-info mb-2 btn-block" @click="rehacerPoly">Rehacer Polígono (Ctrl-r)</button>
           <button class="btn btn-danger mb-2 btn-block" @click="limpiarCanvas">Limpiar Canvas</button>
+          <button class="btn btn-primary mb-2 btn-block" @click="showPreview = true">Procesar</button>
         </div>
 
         <!-- Selector de Tipo -->
@@ -42,6 +43,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Overlay preview de poligonos -->
+  <div v-if="showPreview">
+    <div v-if="polygons.length > 0" class="overlay">
+      <div class="overlay-content">
+        <h2>Vista Previa de Polígonos</h2>
+        <ol ref="polygonList" class="list-group">
+          <li v-for="(polygon, index) in polygons" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ polygon.name ? polygon.name : polygon.tipo  }}</span>
+            <span>{{ polygon.tipo }}</span>
+            <div class="btn-group">
+              <button class="btn btn-secondary btn-sm" @click="cambiarTipo(index)">Cambiar Tipo</button>
+              <button class="btn btn-secondary btn-sm" @click="cambiarNombre(index)">Cambiar nombre</button>
+            </div>
+          </li>
+        </ol>
+        <button class="btn btn-primary mt-3" @click="processPolygons">Confirmar y Procesar</button>
+        <button class="btn btn-secondary mt-3" @click="showPreview = false">Volver al canvas</button>
+      </div>
+    </div>
+    <div v-else class="alert alert-warning" role="alert">
+      Es necesario tener poligonos para procesar
+      <button class="btn btn-secondary mt-3" @click="showPreview = false">Cerrar</button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -64,6 +90,7 @@ export default {
       polygons: [],         // [{points: [[x,y],[x,y]...[x,y]], tipo: this.tipo}] 
       deletedPolygons: [],
       highlightedPolygonIndex: null,
+      showPreview: false,
     };
   },
 
@@ -217,6 +244,14 @@ export default {
         this.polygons[index].name = newName;
       }
     },
+
+    processPolygons() {
+      console.log('Enviado a procesar:', JSON.stringify(this.polygons.map(p => ({ tipo: p.tipo, points: p.points }))));
+      this.showPreview = false;
+      // hacer la peticion al modelo
+      // notificar al usuario en la otra pagina que se ha procesado
+      this.$router.push('prueba');
+    },
   },
 
   mounted() {
@@ -281,7 +316,6 @@ export default {
         }
       }
     });
-
   },
 
   watch: {
@@ -367,5 +401,42 @@ select.form-select {
 option {
   background-color: #444;
   color: #f1f1f1;
+}
+/* Para la vista previa de procesar */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.overlay-content {
+  background: #387e5baf;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 30%; /* Increased width */
+  max-height: 80%; /* Added height constraint */
+  width: 100%;
+  overflow-y: auto; /* Added scroll for overflow content */
+}
+
+.alert-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.alert {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
 }
 </style>
