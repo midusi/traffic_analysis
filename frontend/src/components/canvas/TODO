@@ -1,4 +1,3 @@
-Arreglar las coordenadas de los poligonos (el padding, bordes y elementos css distorsionan las coordenadas reales)
-Se enviaría al modelo los poligonos y la resolución que se utilizó para el canvas.
+Chequear que las coordenadas del canvas coincidan con las del video
 Exportar a modelo
 Notificar a usuario del estado de la operacion
