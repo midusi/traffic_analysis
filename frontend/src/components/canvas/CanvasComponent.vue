@@ -72,6 +72,7 @@
 
 <script>
 let canvas = null;
+let video = null;
 let ctx = null;
 let polygonList = null;
 const colores = {
@@ -96,11 +97,12 @@ export default {
 
   methods: {
     adjustCanvasSize() {
-      const video = this.$refs.video;
+      const videoRect = this.video.getBoundingClientRect();
       this.oldCanvasWidth = this.canvas.width;
       this.oldCanvasHeight = this.canvas.height;
-      this.canvas.width = video.clientWidth;
-      this.canvas.height = video.clientHeight;
+      console.log(videoRect.width, videoRect.height);
+      this.canvas.width = videoRect.width;
+      this.canvas.height = videoRect.height;
     },
 
     getMousePosition(event) {
@@ -261,6 +263,7 @@ export default {
     this.polygonList = this.$refs.polygonList
     this.canvas = this.$refs.canvas;
     this.ctx = this.canvas.getContext('2d');
+    this.video = this.$refs.video;
 
     window.addEventListener('resize', () => {      
       this.adjustCanvasSize();      
@@ -317,7 +320,7 @@ export default {
         if(this.highlightedPolygonIndex !== null) {
           this.cambiarNombre(this.highlightedPolygonIndex);
         }
-      }     
+      }
     });
   },
 
@@ -350,6 +353,11 @@ h1 {
   height: auto;
   border: 2px solid #ddd;
   border-radius: 5px;
+}
+
+.col-lg-7 {
+  padding: 0;
+  margin: 0;
 }
 
 canvas {
