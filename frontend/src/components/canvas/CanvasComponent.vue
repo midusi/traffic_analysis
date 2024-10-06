@@ -146,7 +146,7 @@ export default {
 
     finalizarPoly() {
       if (this.currentPolygon.points.length >= 3) {
-        this.polygons.push({ points: [...this.currentPolygon.points], tipo: this.tipo });
+        this.polygons.push({ points: [...this.currentPolygon.points], tipo: this.tipo, name: this.tipo });
       }
       this.cleanActualPath();
     },
@@ -246,7 +246,10 @@ export default {
     },
 
     processPolygons() {
-      console.log('Enviado a procesar:', JSON.stringify(this.polygons.map(p => ({ tipo: p.tipo, points: p.points }))));
+      const x = this.canvas.width;
+      const y = this.canvas.height;
+      let data = JSON.stringify({polygons: this.polygons.map(p => ({ tipo: p.tipo, points: p.points, name: p.name })), res: [x,y]});
+      console.log('Enviado a procesar:', data);
       this.showPreview = false;
       // hacer la peticion al modelo
       // notificar al usuario en la otra pagina que se ha procesado
@@ -314,7 +317,7 @@ export default {
         if(this.highlightedPolygonIndex !== null) {
           this.cambiarNombre(this.highlightedPolygonIndex);
         }
-      }
+      }     
     });
   },
 
