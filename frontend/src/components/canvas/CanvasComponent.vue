@@ -30,16 +30,18 @@
         </div>
 
         <!-- Lista de Polígonos -->
-        <ol ref="polygonList" class="list-group">
-          <li v-for="(polygon, index) in polygons" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
-            <span>{{ polygon.name ? polygon.name : polygon.tipo  }}</span>
-            <div class="btn-group">
-              <button class="btn btn-danger btn-sm" @click="eliminarPoly(index)">Eliminar (d)</button>
-              <button class="btn btn-secondary btn-sm" @click="cambiarTipo(index)">Cambiar Tipo (t)</button>
-              <button class="btn btn-secondary btn-sm" @click="cambiarNombre(index)">Cambiar nombre (r)</button>
-            </div>
-          </li>
-        </ol>
+        <div v-show="polygons.length>0" class="polygon-list-container">
+          <ol ref="polygonList" class="list-group">
+            <li v-for="(polygon, index) in polygons" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+              <span>{{ polygon.name ? polygon.name : polygon.tipo  }}</span>
+              <div class="btn-group">
+                <button class="btn btn-danger btn-sm" @click="eliminarPoly(index)">Eliminar (d)</button>
+                <button class="btn btn-secondary btn-sm" @click="cambiarTipo(index)">Cambiar Tipo (t)</button>
+                <button class="btn btn-secondary btn-sm" @click="cambiarNombre(index)">Cambiar nombre (r)</button>
+              </div>
+            </li>
+          </ol>
+        </div>
       </div>
     </div>
   </div>
@@ -100,7 +102,6 @@ export default {
       const videoRect = this.video.getBoundingClientRect();
       this.oldCanvasWidth = this.canvas.width;
       this.oldCanvasHeight = this.canvas.height;
-      console.log(videoRect.width, videoRect.height);
       this.canvas.width = videoRect.width;
       this.canvas.height = videoRect.height;
     },
@@ -173,11 +174,15 @@ export default {
     cambiarTipo(index) {
       const polygon = this.polygons[index];
       polygon.tipo = this.ciclarTipo(polygon.tipo);
+      if(polygon.name in colores) //esto se da cuando no se le asigna un nombre 
+        polygon.name = polygon.tipo
       this.cleanActualPath();
     },
     
     toggleTipo() {
       this.tipo = this.ciclarTipo(this.tipo);
+      if(polygon.name in colores)
+        polygon.name = polygon.tipo
     },
 
     ciclarTipo(tipo) {
@@ -449,5 +454,13 @@ option {
   max-width: 500px;
   width: 100%;
   text-align: center;
+}
+
+.polygon-list-container {
+  max-height: 300px; /* Ajusta según tus necesidades */
+  overflow-y: auto; /* Habilita el desplazamiento vertical */
+  background-color: #444; /* Color de fondo */
+  border-radius: 5px; /* Esquinas redondeadas */
+  padding: 10px; /* Espaciado interno */
 }
 </style>
