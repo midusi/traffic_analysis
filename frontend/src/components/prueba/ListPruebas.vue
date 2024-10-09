@@ -1,12 +1,13 @@
 <template>
     <div v-if="datos.data != null">
+        <button type="button" class="btn btn-outline-primary btn-sm" @click="probandoCosas()">Apreta aca a ver si funca</button>
         <BaseTable v-bind:datos="datos" :titulo='`Pruebas`' @changePage="getData" />
     </div>
 </template>
 
 <script>
 import BaseTable from '../base/table/BaseTable.vue';
-import { apiService } from '@/services/api';
+import { apiService, getCookie } from '@/services/api';
 
 export default {
     components: {
@@ -21,6 +22,7 @@ export default {
                     { key: 'name', label: "Nombre" },
                 ],
             },
+            persona: null,
             errors: [],
         }
     },
@@ -41,6 +43,21 @@ export default {
                 this.datos.data = response.data;
             } catch (error) {
                 this.errors.push(error);
+            }
+        },
+
+        async probandoCosas() {
+            try {
+                const response = await apiService.get("auth/logout", {
+                    headers: {
+                        'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+                    }
+                });
+                if(response.status == 200) {
+                    this.$toast.success("Se deslogueo joya, booooca booooooca")    
+                }
+            } catch(error) {
+                this.$toast.error(error)
             }
         },
     },
