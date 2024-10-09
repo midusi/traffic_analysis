@@ -32,7 +32,12 @@ export const useAuthStore = defineStore('auth', {
             this.loading = true
             this.errors = null
             try {
-                const response = await apiService.post('auth/logout/', {})
+                // const response = await apiService.post('auth/logout/', {
+                //     headers: {
+                //         'X-CSRF-TOKEN': getCookie('csrf_access_token'),
+                //     }
+                // })
+                const response = await apiService.get('auth/logout')
 
                 if (response.status !== 200) {
                     throw new Error('Logout failed')
@@ -48,7 +53,8 @@ export const useAuthStore = defineStore('auth', {
         },
         async fetchUser() {
             try {
-                const response = await apiService.post('auth/me/')
+                // const response = await apiService.post('auth/me/')
+                const response = await apiService.get('auth/me')
 
                 if (response.status === 200) {
                     this.user = response.data

@@ -21,10 +21,7 @@
             <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Servicios</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Acerca de</a>
+            <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Videos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Contacto</a>
