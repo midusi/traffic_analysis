@@ -24,4 +24,12 @@ def run():
         password="admin",
     )
 
+    crear_usuario(
+        nombre="No-admin",
+        apellido="Comun",
+        email="noadmin@gmail.com",
+        admin=False,
+        password="noadmin",
+    )
+
     print("Datos cargados, izi")
