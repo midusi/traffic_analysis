@@ -18,7 +18,7 @@ def enviar_mail(asunto, destinatario, html="", mensaje=""):
     """
 
     if es_produccion():
-        msg = Message(asunto, recipients=[destinatario], html=html, body=mensaje)
+        msg = Message(asunto, sender="tu_email@dominio.com", recipients=[destinatario], html=html, body=mensaje)
         mail.send(msg)
     else:
         print(

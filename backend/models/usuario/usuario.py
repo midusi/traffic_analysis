@@ -11,7 +11,7 @@ class Usuario(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     nombre = db.Column(db.String(25), nullable=True)
     apellido = db.Column(db.String(25), nullable=True)
-    admin = db.Column(db.Boolean, nullable=False)
+    admin = db.Column(db.Boolean, default=False, nullable=False)
     activo = db.Column(db.Boolean, nullable=False)
     token = db.Column(db.String(25), nullable=True, unique=True)
     token_expiracion = db.Column(db.DateTime, nullable=True)

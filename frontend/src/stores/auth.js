@@ -7,7 +7,8 @@ export const useAuthStore = defineStore('auth', {
         isAuthenticated: false,
         loading: false,
         errors: null,
-    }),
+  }),
+    persist: true,
     actions: {
         async loginUser(email, password) {
             this.loading = true
@@ -32,7 +33,7 @@ export const useAuthStore = defineStore('auth', {
             this.loading = true
             this.errors = null
             try {
-                const response = await apiService.post('logout', {})
+                const response = await apiService.get('auth/logout')
 
                 if (response.status !== 200) {
                     throw new Error('Logout failed')

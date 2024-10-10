@@ -16,6 +16,13 @@ const router = createRouter({
       name: 'prueba',
       component: PruebaView
     },
+    {
+      path: "/usuarios",
+      children: [
+        { path: 'registro', component: RegistroUsuarioView },
+        { path: 'confirmar/:token', component: RegistroUsuarioConfirmacionView, props: true },
+      ],
+    },
   ]
 })
 
