@@ -23,8 +23,8 @@
           <li class="nav-item">
             <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Videos</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Contacto</a>
+          <li class="nav-item" v-if="authStore.isAuthenticated && authStore.user.admin">
+            <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Panel admin</a>
           </li>
           <!-- Condicional para mostrar el botón basado en la autenticación -->
           <li class="nav-item" v-if="!authStore.isAuthenticated">
