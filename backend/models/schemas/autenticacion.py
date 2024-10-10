@@ -13,6 +13,7 @@ class PerfilSchema(Schema):
     nombre = fields.Str(required=True)
     apellido = fields.Str(required=True)
     activo = fields.Bool(required=True)
+    admin = fields.Bool(required=True)
 
 
 autenticacion_schema = AutenticacionSchema()
