@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="/prueba">
         <img src="../assets/Analisis_de_transito.png" alt="Logo" width="150" height="50" />
       </a>
       <button
@@ -18,10 +18,13 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Inicio</a>
+            <a class="nav-link fw-semibold" href="/prueba" style="color: #ffffff">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Videos</a>
+            <a class="nav-link fw-semibold" href="/videos" style="color: #ffffff">Videos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold" href="/canvas" style="color: #ffffff">Canvas</a>
           </li>
           <li class="nav-item" v-if="authStore.isAuthenticated && authStore.user.admin">
             <a class="nav-link fw-semibold" href="#" style="color: #ffffff">Panel admin</a>
