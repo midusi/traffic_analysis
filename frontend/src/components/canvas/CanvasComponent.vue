@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { apiService } from '@/services/api';
 let canvas = null;
 let video = null;
 let ctx = null;
@@ -252,13 +253,21 @@ export default {
       }
     },
 
-    processPolygons() {
+    async processPolygons() {
       const x = this.canvas.width;
       const y = this.canvas.height;
-      let data = JSON.stringify({polygons: this.polygons.map(p => ({ tipo: p.tipo, points: p.points, name: p.name })), res: [x,y]});
+      let data = {polygons: this.polygons.map(p => ({ tipo: p.tipo, points: p.points, name: p.name })), res: [x,y]};
       console.log('Enviado a procesar:', data);
       this.showPreview = false;
       // hacer la peticion al modelo
+      try {
+        const response = await apiService.post("modelo/encolar", data);
+        if(response.status == 200) {
+            this.$toast.success("Se pudo comunicaAAAAAR")    
+        }
+      } catch(error) {
+        this.$toast.error(error)
+      }
       // notificar al usuario en la otra pagina que se ha procesado
       this.$router.push('prueba');
     },
