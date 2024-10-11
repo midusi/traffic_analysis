@@ -89,7 +89,7 @@ export default {
     return {
       isDrawing: false,
       tipo: 'Entrada',
-      currentPolygon: { points: [], tipo: 'Entrada' },
+      currentPolygon: { points: [], tipo: 'Entrada', name: 'Entrada' },
       polygons: [],         // [{points: [[x,y],[x,y]...[x,y]], tipo: this.tipo}] 
       deletedPolygons: [],
       highlightedPolygonIndex: null,
@@ -181,8 +181,8 @@ export default {
     
     toggleTipo() {
       this.tipo = this.ciclarTipo(this.tipo);
-      if(polygon.name in colores)
-        polygon.name = polygon.tipo
+      if(this.currentPolygon.name in colores)
+        this.currentPolygon.name = this.currentPolygon.tipo
     },
 
     ciclarTipo(tipo) {
