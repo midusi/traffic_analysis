@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.exceptions import UnsupportedMediaType
-# from models.ia.ia import run
+from backend.models.ia import encolar
 
 modelo_bp = Blueprint("modelo", __name__, url_prefix="/modelo")
 
@@ -15,10 +15,12 @@ def encolarVideo():
     except UnsupportedMediaType as err:
         return {"error": repr(err)}, 400
 
-    
+    #validar data con schema
 
-    print(req_data)
-    print(req_data['polygons'])
+    encolar("otro_minuto.mp4")
+
+    # print(req_data)
+    # print(req_data['polygons'])
     return jsonify({"message": "Se recibió el video para procesar"}), 200
     
 # def procesarVideo():
