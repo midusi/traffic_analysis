@@ -22,7 +22,7 @@ pkgs.mkShell {
 
       # Ventana 1: Backend Flask
       tmux rename-window -t civil 'backend'
-      tmux send-keys -t civil 'cd backend && poetry run flask run' C-m
+      tmux send-keys -t civil 'cd backend && poetry run flask --debug run' C-m
 
       # Ventana 2: Frontend npm
       tmux new-window -t civil -n 'frontend'
