@@ -1,4 +1,3 @@
-import argparse
 from typing import Dict, Iterable, List, Set
 import cv2
 import numpy as np
@@ -72,7 +71,7 @@ class VideoProcessor:
         self,
         source_weights_path: str,
         source_video_path: str,
-        target_video_path: str = None,
+        target_video_path: str,
         confidence_threshold: float = 0.3,
         iou_threshold: float = 0.7,
     ) -> None:
@@ -198,46 +197,18 @@ class VideoProcessor:
         )
         return self.annotate_frame(frame, detections)
 
-
-def run():
-    parser = argparse.ArgumentParser(
-        description="Traffic Flow Analysis with YOLO and ByteTrack"
-    )
-
-    parser.add_argument(
-        "--source_weights_path",
-        required=True,
-        help="Path to the source weights file",
-        type=str,
-    )
-    parser.add_argument(
-        "--source_video_path",
-        required=True,
-        help="Path to the source video file",
-        type=str,
-    )
-    parser.add_argument(
-        "--target_video_path",
-        default=None,
-        help="Path to the target video file (output)",
-        type=str,
-    )
-    parser.add_argument(
-        "--confidence_threshold",
-        default=0.3,
-        help="Confidence threshold for the model",
-        type=float,
-    )
-    parser.add_argument(
-        "--iou_threshold", default=0.7, help="IOU threshold for the model", type=float
-    )
-
-    args = parser.parse_args()
+def run(
+    source_weights_path: str,
+    source_video_path: str,
+    target_video_path: str = None,
+    confidence_threshold: float = 0.3,
+    iou_threshold: float = 0.7
+):
     processor = VideoProcessor(
-        source_weights_path=args.source_weights_path,
-        source_video_path=args.source_video_path,
-        target_video_path=args.target_video_path,
-        confidence_threshold=args.confidence_threshold,
-        iou_threshold=args.iou_threshold,
+        source_weights_path=source_weights_path,
+        source_video_path=source_video_path,
+        target_video_path=target_video_path,
+        confidence_threshold=confidence_threshold,
+        iou_threshold=iou_threshold,
     )
     processor.process_video()

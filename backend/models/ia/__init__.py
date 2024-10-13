@@ -1,12 +1,13 @@
-import sys
+import os
 from .example import run
 
 cola_videos = []
 
 def encolar(data):
     """
-    data deberia tener el path del video, la resolución y los poligonos con sus datos
+    data tiene el path del video, la resolución y los poligonos con sus datos (tipo,nombre, lista de puntos)
     """
+    #esta funcion solo tendria que encolar porque sino traba la request de front
     if(len(cola_videos) == 0):
         procesar(data)
     else:
@@ -18,22 +19,28 @@ def procesar(data):
     enviar frames/n a cada hilo
     (tmbn esto se podria hacer en otro server)
     """
-    if(len(cola_videos) != 0):
+    if(not data):
         cola_videos.pop(data)
 
-    # videos.CambiarEstado(data['video_path'], 'procesado')
-     
-    # Simula la llamada como si fuera desde la terminal
-    sys.argv = [
-        "example.py",
-        "--source_weights_path", "/home/tao/civil/proyecto_civil/backend/models/ia/traffic_analysis.pt",
-        "--source_video_path", "/home/tao/civil/proyecto_civil/backend/models/ia/otro minuto.mp4",
-        "--iou_threshold", "0.5",
-        "--target_video_path", "/home/tao/civil/proyecto_civil/backend/models/ia/traffic_analysis_result.mp4"
-    ]
+    # videos.CambiarEstado(data['video_path'], 'procesando')
+
+    nombre_video = data.get('path')
+    path_abs = os.path.join(os.getcwd(), "models", "ia")
+    source_video_path = os.path.join(path_abs, nombre_video)
+    source_weights_path = os.path.join(path_abs, "traffic_analysis.pt")
+    target_video_path = os.path.join(path_abs, "resultados", nombre_video)
+    confidence_threshold = 0.3
+    iou_threshold = 0.7
 
     print("Antes de procesar")
-    # Llama a la función `run` para probarla
-    run()   
-    print("Despues de procesar")
+    run(
+        source_weights_path=source_weights_path,
+        source_video_path=source_video_path,
+        target_video_path=target_video_path,
+        confidence_threshold=confidence_threshold,
+        iou_threshold=iou_threshold
+    )
+    print("Después de procesar")
 
+    # videos.CambiarEstado(data['video_path'], 'finalizado')
+    # volver a ejecutar procesar si la lista no esta vacia?
